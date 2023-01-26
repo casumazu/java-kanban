@@ -1,21 +1,22 @@
-import java.util.ArrayList;
-
 public class Task {
-    protected int id;
+    protected Integer id;
     protected String title;
     protected String description;
-    protected String status;
-    private ArrayList<Integer> tasks;
+    protected TaskStatus status;
 
-    public Task(String title, String description, String status) {
+    public Task(String title, String description) {
+        this.id = null;
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = TaskStatus.NEW;
     }
 
-
-    public int getId() {
+    public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -26,8 +27,12 @@ public class Task {
         return description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -36,8 +41,7 @@ public class Task {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 '}';
     }
-
 }
