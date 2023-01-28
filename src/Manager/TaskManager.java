@@ -1,4 +1,4 @@
-package Manager;
+package manager;
 import tasks.*;
 
 import java.util.ArrayList;
@@ -31,9 +31,7 @@ public class TaskManager {
 
     public ArrayList<Epic> getAllEpics() {
         ArrayList<Epic> arEpic = new ArrayList<>();
-        for(Epic epic : epics.values()){
-            arEpic.add(epic);
-        }
+        arEpic.addAll(epics.values());
         return arEpic;
     }
 
@@ -54,10 +52,9 @@ public class TaskManager {
         return task;
     }
 
-    public ArrayList<Task> getTaskById(Integer getId){
-      ArrayList<Task> taskId = new ArrayList<>();
-      taskId.add(tasks.get(getId));
-      return taskId;
+    public Task getTaskById(Integer getId){
+      Task task = tasks.get(getId);
+      return task;
     }
 
     public void updateTask(Task task) {
@@ -79,10 +76,9 @@ public class TaskManager {
         return epic;
     }
 
-    public ArrayList<Epic> getEpicById(Integer getId){
-        ArrayList<Epic> epicId = new ArrayList<>();
-        epicId.add(epics.get(getId));
-        return epicId;
+    public Epic getEpicById(Integer getId){
+        Epic epic = epics.get(getId);
+        return epic;
     }
 
     public void updateEpic(Epic epic) {
@@ -106,6 +102,8 @@ public class TaskManager {
         Epic epic = epics.get(epicId);
         if (epic.getSubtasks().isEmpty()) {
             epic.setStatus(TaskStatus.NEW);
+        } else {
+            System.out.println("Нет подзадач, статус остаётся прежним.");
         }
         for (Integer subId : epic.getSubtasks()) {
             if (subtasks.get(subId).getStatus() == TaskStatus.NEW) {
@@ -175,6 +173,7 @@ public class TaskManager {
 
     public void removeAllEpic() {
         epics.clear();
+        subtasks.clear();
     }
 
     public void removeAllSubtask() {
