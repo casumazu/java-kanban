@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-
-
     protected List<Task> history;
 
     public InMemoryHistoryManager() {
