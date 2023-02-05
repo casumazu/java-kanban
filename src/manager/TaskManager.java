@@ -19,7 +19,7 @@ public interface TaskManager {
 
     // ---------------------------------------------------//
     /* TASK */
-    public Task addTask(Task task);
+    public void addTask(Task task);
 
     public Task getTaskById(Integer getId);
 
@@ -30,7 +30,7 @@ public interface TaskManager {
 // ---------------------------------------------------//
     /* ЭПИКИ */
 
-    public Epic addEpic(Epic epic);
+    public void addEpic(Epic epic);
 
     public Epic getEpicById(Integer getId);
 
@@ -45,12 +45,12 @@ public interface TaskManager {
 // ---------------------------------------------------//
     /* SUBTASK */
 
-    public Subtask addSubtask(Subtask subtask);
+    public void addSubtask(Subtask subtask);
 
     public void updateSubtask(Subtask subtask);
     public void removeSubtaskById(Integer subtaskId);
 
-    public Subtask getSubtasksByEpicId(Integer epicId);
+    public ArrayList<Subtask> getSubtasksByEpicId(Integer epicId);
 
 // ---------------------------------------------------
     /* Удаление всех задач */

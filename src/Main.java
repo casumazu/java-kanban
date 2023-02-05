@@ -1,4 +1,3 @@
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 import tasks.*;
@@ -23,10 +22,12 @@ public class Main {
         manager.addTask(task1);
         manager.addTask(task2);
 
-        manager.updateEpicStatus(1);
-        manager.getEpicById(1);
-        manager.getEpicById(2);
+        manager.addSubtask(subtask);
+        manager.addSubtask(subtask1);
+
+
         manager.getSubtasksByEpicId(1);
+        manager.getEpicById(1);
         System.out.println(manager.getHistory());
 
 
