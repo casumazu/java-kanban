@@ -62,4 +62,6 @@ public interface TaskManager {
     public void removeAllSubtask();
 // ----------------------------------------------------
     public List<Task> getHistory();
+
+    public void remove(int id);
 }
