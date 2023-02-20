@@ -88,8 +88,6 @@ public class InMemoryHistoryManager implements HistoryManager {
                 next.prev = prev;
                 taskNode.next = null;
             }
-
-            taskNode = null;
             size--;
         }
     }
