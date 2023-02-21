@@ -1,6 +1,4 @@
-import manager.InMemoryHistoryManager;
 import manager.Managers;
-import manager.Node;
 import manager.TaskManager;
 import tasks.*;
 
@@ -12,6 +10,7 @@ public class Main {
         Epic epic1 = new Epic("Епик1", "Описание эпика");
         Subtask subtask = new Subtask("Сабтаск1", "Епика1", 1);
         Subtask subtask1 = new Subtask("Сабтаск2", "Епика1", 1);
+        Subtask subtask2 = new Subtask("Сабтаск3", "Епика1", 1);
 
         Epic epic2 = new Epic("Епик2", "Описание эпика");
 
@@ -25,15 +24,23 @@ public class Main {
         manager.addTask(task2);
 
         manager.addSubtask(subtask);
+        manager.addSubtask(subtask1);
+        manager.addSubtask(subtask2);
 
         manager.getSubtasksByEpicId(1);
+        System.out.println(manager.getHistory());
         manager.getEpicById(1);
+        System.out.println(manager.getHistory());
+        manager.getSubtasksByEpicId(2);
+        System.out.println(manager.getHistory());
         manager.getEpicById(1);
+        System.out.println(manager.getHistory());
+        manager.getSubtasksByEpicId(2);
+
         System.out.println(manager.getHistory());
         manager.getSubtasksByEpicId(1);
+        manager.remove(5);
+
         System.out.println(manager.getHistory());
-
-
-
     }
 }

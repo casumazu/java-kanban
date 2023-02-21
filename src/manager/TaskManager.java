@@ -1,13 +1,11 @@
 package manager;
+
 import tasks.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
-
-
-
 
 
     // Получение ЗАДАЧ / ЕПИКОВ / САБТАСКОВ
@@ -48,6 +46,7 @@ public interface TaskManager {
     public void addSubtask(Subtask subtask);
 
     public void updateSubtask(Subtask subtask);
+
     public void removeSubtaskById(Integer subtaskId);
 
     public ArrayList<Subtask> getSubtasksByEpicId(Integer epicId);
@@ -60,7 +59,8 @@ public interface TaskManager {
     public void removeAllEpic();
 
     public void removeAllSubtask();
-// ----------------------------------------------------
+
+    // ----------------------------------------------------
     public List<Task> getHistory();
 
     public void remove(int id);
