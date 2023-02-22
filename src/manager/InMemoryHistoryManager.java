@@ -21,10 +21,11 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (!mapTaskHistory.containsKey(task.getId())) {
+        if (mapTaskHistory.containsKey(task.getId())) {
             remove(task.getId());
-            linkLast(task);
         }
+            linkLast(task);
+
     }
 
     // Добавление задачи в начало списка
