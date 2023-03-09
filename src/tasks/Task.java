@@ -17,13 +17,6 @@ public class Task {
         this.taskType = TaskType.TASK;
     }
 
-    public Task(int id, String title, TaskStatus status, String description, int epicId) {
-        this.title = title;
-        this.description = description;
-        this.status = TaskStatus.NEW;
-        this.taskType = TaskType.TASK;
-    }
-
     public Task(int id, String title, String description, TaskStatus status) {
         this.id = id;
         this.title = title;
