@@ -1,15 +1,35 @@
 package tasks;
 
+import manager.TaskType;
+
 public class Task {
     protected Integer id;
     protected String title;
     protected String description;
     protected TaskStatus status;
 
+    protected TaskType taskType;
+
     public Task(String title, String description) {
         this.title = title;
         this.description = description;
         this.status = TaskStatus.NEW;
+        this.taskType = TaskType.TASK;
+    }
+
+    public Task(int id, String title, TaskStatus status, String description, int epicId) {
+        this.title = title;
+        this.description = description;
+        this.status = TaskStatus.NEW;
+        this.taskType = TaskType.TASK;
+    }
+
+    public Task(int id, String title, String description, TaskStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.taskType = TaskType.TASK;
     }
 
     public Integer getId() {
@@ -44,5 +64,13 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String toStringFromFile() {
+        return String.format("%s,%s,%s,%s,%s,%s", id, taskType, title, status, description, "");
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
     }
 }
