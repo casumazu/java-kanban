@@ -6,20 +6,16 @@ import tasks.Task;
 import tasks.TaskStatus;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
 
     private File file;
     private String fileName;
 
+    private HashMap<Integer, String> allTasks = new HashMap<>();
     public FileBackedTasksManager(File file) {
         this.file = file;
 
@@ -34,75 +30,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         }
     }
 
-
-//    private static Task fromString(String value) {
-//        String[] parts = value.split(",");
-//        int id = Integer.parseInt(parts[0]);
-//        TaskType type = TaskType.valueOf(parts[1]);
-//        String name = parts[2];
-//        TaskStatus status = TaskStatus.valueOf(parts[3]);
-//        String description = parts[4];
-//        int epicId = Integer.parseInt(parts[5]);
-//
-//        if (type == TaskType.TASK) {
-//            return new Task(id, name, status, description, epicId);
-//        } else if (type == TaskType.EPIC) {
-//            return new Epic(id, name, status, description);
-//        } else {
-//            return new Subtask(id, name, status, description, epicId);
-//        }
-//    }
-    private static String toString(HistoryManager manager) {
-        List<String> str = new ArrayList<>();
-        for (Task task : manager.getHistory()) {
-            str.add(String.valueOf(task.getId()));
-        }
-        return String.join(",", str);
-    }
-    private String toString(Task task) {
-        return task.getId() + "," +
-                task.getId() + "," +
-                task.getTaskType() + "," +
-                task.getStatus() + "," +
-                task.getDescription() + "," +
-                task.getTitle();
-    }
-
-    /*
-    private void save() {
-        try (Writer writer = new FileWriter(new File(fileName))) {
-
-            writer.write("id,type,name,status,description,epic\n");
-
-            for (Epic epic : getAllEpics()) {
-                writer.write(epic.getId() + ",");
-                writer.write(epic.getTaskType() + ",");
-                writer.write(epic.getTitle() + ",");
-                writer.write(epic.getStatus() + ",");
-                writer.write(epic.getDescription() + "," + "\n");
-            }
-
-            for (Task task : getAllTask()) {
-                writer.write(task.getId() + ",");
-                writer.write(task.getTaskType() + ",");
-                writer.write(task.getTitle() + ",");
-                writer.write(task.getStatus() + ",");
-                writer.write(task.getDescription() + "," + "\n");
-                for (Subtask subtask : getAllSubtask()) {
-                    writer.write(subtask.getId() + ",");
-                    writer.write(subtask.getTaskType() + ",");
-                    writer.write(subtask.getTitle() + ",");
-                    writer.write(subtask.getStatus() + ",");
-                    writer.write(subtask.getDescription() + ",");
-                    writer.write(subtask.getEpicId() + "," + "\n");
-
-                }
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка save");
-        }
-    }
-    */
     private static Task fromString(String str, TaskType taskType, FileBackedTasksManager fileBackedTasksManager) {
         String[] dataOfTask = str.split(",", 6);
         int id = Integer.parseInt(dataOfTask[0]);
@@ -110,6 +37,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
         TaskStatus status = TaskStatus.valueOf(dataOfTask[3]);
         String description = dataOfTask[4];
         String epicIdString = dataOfTask[5].trim();
+
 
         switch (taskType) {
             case TASK -> {
@@ -122,14 +50,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (epicIdString.isEmpty()) {
                     return null;
                 }
-                return new Subtask(id, name, description, status,
-                        fileBackedTasksManager.epics.get(Integer.valueOf(epicIdString)).getId());
+                int epicId = Integer.valueOf(epicIdString);
+                return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(epicId).getId());
             }
             default -> {
                 return null;
             }
         }
     }
+
     public static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager manager = new FileBackedTasksManager(file);
 
@@ -139,6 +68,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                String[] lineData = line.split(",");
+                if (lineData.length < 2) {
+                    continue;
+                }
                 TaskType taskType = TaskType.valueOf(line.split(",")[1].toUpperCase());
                 Task task = fromString(line, taskType, manager);
                 if (task instanceof Epic) {
@@ -151,8 +84,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                     }
                 }
             }
+        } catch (FileNotFoundException e) {
+            throw new ManagerSaveException("Файл не найден.", e);
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка чтения файла.");
+            throw new ManagerSaveException("Ошибка чтения файла - " + file.getName());
         }
 
         return manager;
@@ -161,22 +96,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
     public void save() {
         try (Writer writer = new FileWriter(file)) {
             writer.write("id,type,name,status,description,epic\n");
-            HashMap<Integer, String> allTasks = new HashMap<>();
-            for (Task task : super.getAllTask()) {
+            List<Task> allTaskList = new ArrayList<>();
+            allTaskList.addAll(super.getAllTask());
+            allTaskList.addAll(super.getAllEpics());
+            allTaskList.addAll(super.getAllSubtask());
+            for (Task task : allTaskList) {
                 allTasks.put(task.getId(), task.toStringFromFile());
-                for (Epic epic : super.getAllEpics()) {
-                    allTasks.put(epic.getId(), epic.toStringFromFile());
-                } for (Subtask subtask : getAllSubtask()){
-                    allTasks.put(subtask.getId(), subtask.toStringFromFile());
-                }
             }
             for (String value : allTasks.values()) {
                 writer.write(String.format("%s\n", value));
             }
             writer.write("\n");
-
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка записи файла.");
+            throw new ManagerSaveException(String.format("Ошибка записи файла %s.", file.getName()));
         }
     }
 
