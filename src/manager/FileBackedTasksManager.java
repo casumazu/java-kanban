@@ -10,12 +10,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-public class FileBackedTasksManager extends InMemoryTaskManager implements TaskManager {
+public class FileBackedTasksManager extends InMemoryTaskManager {
 
     private File file;
     private String fileName;
 
     private HashMap<Integer, String> allTasks = new HashMap<>();
+
+
     public FileBackedTasksManager(File file) {
         this.file = file;
 
@@ -50,7 +52,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
                 if (epicIdString.isEmpty()) {
                     return null;
                 }
-                int epicId = Integer.valueOf(epicIdString);
+                int epicId = Integer.parseInt(epicIdString);
                 return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(epicId).getId());
             }
             default -> {
@@ -95,18 +97,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager implements TaskM
 
     public void save() {
         try (Writer writer = new FileWriter(file)) {
-            writer.write("id,type,name,status,description,epic\n");
+
+            List<Task> history = new ArrayList<>(super.getHistory());
             List<Task> allTaskList = new ArrayList<>();
+
+            writer.write("id,type,name,status,description,epic\n");
+
             allTaskList.addAll(super.getAllTask());
             allTaskList.addAll(super.getAllEpics());
             allTaskList.addAll(super.getAllSubtask());
+
+            allTaskList.sort(Comparator.comparing(Task::getId));
+
             for (Task task : allTaskList) {
-                allTasks.put(task.getId(), task.toStringFromFile());
+                writer.write(String.format("%s\n", task.toStringFromFile()));
             }
             for (String value : allTasks.values()) {
                 writer.write(String.format("%s\n", value));
             }
             writer.write("\n");
+
+            history.sort(Comparator.comparing(Task::getId));
+
+            for (Task value : history) {
+                writer.write(String.format("%s\n", value.toStringFromFile()));
+            }
+            writer.write("\n");
+
         } catch (IOException e) {
             throw new ManagerSaveException(String.format("Ошибка записи файла %s.", file.getName()));
         }
