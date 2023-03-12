@@ -33,8 +33,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-
-
     private static Task fromString(String str, TaskType taskType, FileBackedTasksManager fileBackedTasksManager) {
         String[] dataOfTask = str.split(",", 6);
         int id = Integer.parseInt(dataOfTask[0]);
@@ -73,22 +71,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
             String line;
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                 String[] lineData = line.split(",");
+                String[] lineData = line.split(",");
                 if (lineData.length < 1) {
                     continue;
                 }
-                     TaskType taskType = TaskType.valueOf(line.split(",")[1].toUpperCase());
+                TaskType taskType = TaskType.valueOf(line.split(",")[1].toUpperCase());
                 Task task = fromString(line, taskType, manager);
                 if (task instanceof Epic) {
                     manager.addEpic((Epic) task);
                 } else if (task instanceof Subtask) {
-                       manager.addSubtask((Subtask) task);
+                    manager.addSubtask((Subtask) task);
                 } else {
                     if (task != null) {
                         manager.addTask(task);
                     }
                 }
+                for (Integer id : historyFromString(line)) {
+                    if (task != null) {
+                        if (manager.subtasks.get(id) != null)
+                            manager.historyManager.add(manager.subtasks.getOrDefault(id, null));
+                        else if (manager.epics.get(id) != null) {
+                            manager.historyManager.add(manager.epics.getOrDefault(id, null));
+                        }
+                    }
+                }
             }
+
 
         } catch (FileNotFoundException e) {
             throw new ManagerSaveException("Файл не найден.", e);
@@ -99,16 +107,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return manager;
     }
 
-
-
-    private static List<Integer> fromString(String value) {
-        String[] idsString = value.split(",");
-        List<Integer> tasksId = new ArrayList<>();
-        for (String idString : idsString) {
-            tasksId.add(Integer.valueOf(idString));
+    public static List<Integer> historyFromString(String value) {
+        if (value == null || value.isEmpty()) {
+            return Collections.emptyList();
         }
-        return tasksId;
+        String[] parts = value.split(",");
+        List<Integer> history = new ArrayList<>();
+        for (String part : parts) {
+            try {
+                int historyValue = Integer.parseInt(part.trim());
+                history.add(historyValue);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return history;
     }
+
 
     public void save() {
         try (Writer writer = new FileWriter(file)) {

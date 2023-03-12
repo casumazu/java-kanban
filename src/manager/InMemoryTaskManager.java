@@ -8,6 +8,7 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int id;
+
     protected final HashMap<Integer, Task> tasks;
     protected final HashMap<Integer, Subtask> subtasks;
     protected final HashMap<Integer, Epic> epics;
@@ -160,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Subtask> subtasksOfEpic = new ArrayList<>();
         Epic epic = epics.get(epicId);
 
-        for (Integer subtaskId : epic.getSubtasks()) {
+         for (Integer subtaskId : epic.getSubtasks()) {
             subtasksOfEpic.add(subtasks.get(subtaskId));
             historyManager.add(subtasks.get(subtaskId));
         }

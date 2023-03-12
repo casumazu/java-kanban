@@ -6,23 +6,16 @@ public class Main {
     public static void main(String[] args) {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
 
+        Epic epic = new Epic("Epic", "Описание епика1");
+        Epic epic2 = new Epic("Epic", "Описание епика2");
 
-        Task task = new Task("task1", "Описание Таска");
-        Task task2 = new Task("task2", "Проверка 2.0");
+        Subtask sub = new Subtask("sub1", "subbbs", 1);
 
-        Epic epicasdasd = new Epic("епик проверка", "Время 3 утра....");
-
-        Subtask subwaySurfers = new Subtask("Мы в щи", "Пора домой", 1);
-        manager.addEpic(epicasdasd);
-        manager.addSubtask(subwaySurfers);
-        manager.addTask(task);
-        manager.addTask(task2);
-        manager.getEpicById(1);
+        manager.addEpic(epic);
+        manager.addEpic(epic2);
+        manager.addSubtask(sub);
 
         manager.getSubtasksByEpicId(1);
-
-
-
-
+        manager.getEpicById(1);
     }
 }
