@@ -8,6 +8,7 @@ import tasks.TaskStatus;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -15,7 +16,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private File file;
     private String fileName;
 
-    private HashMap<Integer, String> allTasks = new HashMap<>();
+    private final HashMap<Integer, String> allTask = new HashMap<>();
+
 
 
     public FileBackedTasksManager(File file) {
@@ -34,12 +36,16 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
 
     private static Task fromString(String str, TaskType taskType, FileBackedTasksManager fileBackedTasksManager) {
-        String[] dataOfTask = str.split(",", 6);
+        String[] dataOfTask = str.split(",", 9);
         int id = Integer.parseInt(dataOfTask[0]);
         String name = dataOfTask[2];
         TaskStatus status = TaskStatus.valueOf(dataOfTask[3]);
         String description = dataOfTask[4];
         String epicIdString = dataOfTask[5].trim();
+        int duration = Integer.parseInt(dataOfTask[6]);
+        LocalDateTime dateTime = LocalDateTime.parse(dataOfTask[7]);
+        LocalDateTime endDate =  LocalDateTime.parse(dataOfTask[8]);
+
 
 
         switch (taskType) {
@@ -54,7 +60,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     return null;
                 }
                 int epicId = Integer.parseInt(epicIdString);
-                return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(epicId).getId());
+                return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(epicId).getId(), duration, dateTime, endDate);
             }
             default -> {
                 return null;
@@ -70,6 +76,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             reader.readLine();
 
             String line;
+
             while ((line = reader.readLine()) != null && !line.isEmpty()) {
                 String[] lineData = line.split(",");
                 if (lineData.length < 1) {
@@ -128,8 +135,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try (Writer writer = new FileWriter(file)) {
             List<Task> allTaskList = new ArrayList<>();
             List<Task> historyManager = getHistory();
-
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,epic,duration,startTime,endTime\n");
 
             allTaskList.addAll(super.getAllTask());
             allTaskList.addAll(super.getAllEpics());
@@ -140,9 +146,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (Task task : allTaskList) {
                 writer.write(String.format("%s\n", task.toStringFromFile()));
             }
-            for (String value : allTasks.values()) {
+            for (String value : allTask.values()) {
                 writer.write(String.format("%s\n", value));
             }
+
             writer.write("\n");
 
             historyManager.sort(Comparator.comparing(Task::getId));
@@ -172,6 +179,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             sb.append(task.getId());
         }
         return sb.toString();
+    }
+
+    public List<Task> getPrioritizedTasks() {
+        Set<Task> prioritizedTasks = new TreeSet<>(
+                Comparator.comparing(Task::getStartTime,
+                Comparator.nullsLast(Comparator.naturalOrder())).thenComparingInt(Task::getId)
+                        );
+        return null;
     }
 
     @Override

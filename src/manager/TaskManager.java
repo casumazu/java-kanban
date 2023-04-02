@@ -8,6 +8,8 @@ import java.util.List;
 public interface TaskManager {
 
 
+    int compare(Task o1, Task o2);
+
     // Получение ЗАДАЧ / ЕПИКОВ / САБТАСКОВ
     public ArrayList<Task> getAllTask();
 
