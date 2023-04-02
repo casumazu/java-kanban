@@ -28,16 +28,16 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    // Добавление задачи в начало списка
-    public void linkFirst(Task element) {
-        final Node<Task> oldHead = head;
-        final Node<Task> newNode = new Node<>(null, element, oldHead);
-        head = newNode;
-        mapTaskHistory.put(element.getId(), newNode);
-        if (oldHead == null) tail = newNode;
-        else oldHead.prev = newNode;
-        size++;
-    }
+//    // Добавление задачи в начало списка
+//    public void linkFirst(Task element) {
+//        final Node<Task> oldHead = head;
+//        final Node<Task> newNode = new Node<>(null, element, oldHead);
+//        head = newNode;
+//        mapTaskHistory.put(element.getId(), newNode);
+//        if (oldHead == null) tail = newNode;
+//        else oldHead.prev = newNode;
+//        size++;
+//    }
 
 
     // Добавление задачи в конец списка

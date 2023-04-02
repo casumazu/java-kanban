@@ -12,8 +12,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class InMemoryManagerTest {
     TaskManager manager = Managers.getDefault();
@@ -77,7 +76,6 @@ public class InMemoryManagerTest {
 
         assertNotNull(epic, "Задача не создалась");
     }
-
 
 
 }
