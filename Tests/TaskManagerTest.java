@@ -26,9 +26,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         return new Subtask("sub2", "subbbs2", epic.getId(), 30, LocalDateTime.now());
     }
 
-
     @Test
-    public void ReturnEmptyHistory() {
+    public void returnEmptyHistory() {
         assertEquals(Collections.EMPTY_LIST, manager.getHistory());
     }
 
@@ -43,7 +42,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldCreateEpic() {
+    public void createEpic() {
         Epic epic = addEpic();
         manager.addEpic(epic);
         List<Epic> epics = manager.getAllEpics();
@@ -54,7 +53,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldCreateSubtask() {
+    public void createSubtask() {
         Epic epic = addEpic();
         manager.addEpic(epic);
         Subtask subtask = addSubtask(epic);
@@ -155,7 +154,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    public void shouldReturnEmptyListSubtasksIfNoSubtasks() {
+    public void emptyListSubtasksNoSubtasks() {
         assertTrue(manager.getAllTask().isEmpty());
         assertTrue(manager.getAllEpics().isEmpty());
         assertTrue(manager.getAllSubtask().isEmpty());

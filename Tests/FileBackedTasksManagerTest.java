@@ -42,7 +42,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   
         assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
     }
     @Test
-    public void CorrectlySaveAndLoad() {
+    public void saveAndLoad() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
         Task task = new Task("Test1", "Test TaskWork", LocalDateTime.now(), 30);
 
@@ -55,7 +55,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   
     }
 
     @Test
-    public void SaveAndLoadEmptyTask() {
+    public void saveAndLoadEmptyTask() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
 
         assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
@@ -63,7 +63,7 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   
         assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
     }
     @Test
-    public void LoadHistoryEmptyHistory() {
+    public void loadHistoryEmptyHistory() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
         assertEquals(Collections.EMPTY_LIST, manager.getHistory());
     }
