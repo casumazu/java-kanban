@@ -1,6 +1,8 @@
 import manager.FileBackedTasksManager;
 
+import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Task;
@@ -16,7 +18,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-public class FileBackedTasksManagerTest {
+class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   {
+
+    @BeforeEach
+    public void beforeEach() {
+        manager = new FileBackedTasksManager((new File(("files/data.csv"))));
+    }
 
     @AfterEach
     public void afterEach() {

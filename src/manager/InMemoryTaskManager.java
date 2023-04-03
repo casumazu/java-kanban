@@ -23,6 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
         historyManager = Managers.getDefaultHistory();
     }
 
+
     private void addNewPrioritizedTask(Task task) {
         prioritizedTasks.add(task);
         validateTaskPriority();

@@ -18,7 +18,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
         return new Task("Test1", "Test TaskWork", LocalDateTime.now(), 30);
     }
     protected Epic addEpic() {
-
         return new Epic("Epic", "Описание 2", LocalDateTime.now());
     }
     protected Subtask addSubtask(Epic epic) {
