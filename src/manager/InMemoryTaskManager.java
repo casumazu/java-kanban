@@ -26,7 +26,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void addNewPrioritizedTask(Task task) {
         prioritizedTasks.add(task);
-        validateTaskPriority();
+        checkIntersections();
     }
 
     public boolean checkTime(Task task) {
@@ -50,7 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private void validateTaskPriority() {
+    private void checkIntersections() {
         List<Task> tasks = getPrioritizedTasks();
 
         for (int i = 1; i < tasks.size(); i++) {
@@ -59,7 +59,7 @@ public class InMemoryTaskManager implements TaskManager {
             boolean taskHasIntersections = checkTime(task);
 
             if (taskHasIntersections) {
-                throw new ManagerSaveException("Задачи " + task.getId() + " и " + tasks.get(i - 1) + "пересекаются");
+                throw new ManagerSaveException("Обнаружено пересечение между: " + task.getId() + " и " + tasks.get(i - 1) + ".");
             }
         }
     }
