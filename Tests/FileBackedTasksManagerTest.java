@@ -37,9 +37,9 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   
     @Test
     public void saveAndLoadEmptyTasks() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
-        assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllEpics());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
+        assertEquals(Collections.emptyList(), manager.getAllTask());
+        assertEquals(Collections.emptyList(), manager.getAllEpics());
+        assertEquals(Collections.emptyList(), manager.getAllSubtask());
     }
     @Test
     public void saveAndLoad() {
@@ -58,13 +58,13 @@ class FileBackedTasksManagerTest extends TaskManagerTest<InMemoryTaskManager>   
     public void saveAndLoadEmptyTask() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
 
-        assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllEpics());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllSubtask());
+        assertEquals(Collections.emptyList(), manager.getAllTask());
+        assertEquals(Collections.emptyList(), manager.getAllEpics());
+        assertEquals(Collections.emptyList(), manager.getAllSubtask());
     }
     @Test
     public void loadHistoryEmptyHistory() {
         FileBackedTasksManager manager = FileBackedTasksManager.loadFromFile(new File(("files/data.csv")));
-        assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+        assertEquals(Collections.emptyList(), manager.getHistory());
     }
 }

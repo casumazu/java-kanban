@@ -29,26 +29,6 @@ public class InMemoryTaskManager implements TaskManager {
         checkIntersections();
     }
 
-    public boolean checkTime(Task task) {
-        List<Task> tasks = List.copyOf(prioritizedTasks);
-        int sizeTimeNull = 0;
-        if (tasks.size() > 0) {
-            for (Task taskSave : tasks) {
-                if (taskSave.getStartTime() != null && taskSave.getEndTime() != null) {
-                    if (task.getStartTime().isBefore(taskSave.getStartTime()) && task.getEndTime().isBefore(taskSave.getStartTime())) {
-                        return true;
-                    } else if (task.getStartTime().isAfter(taskSave.getEndTime()) && task.getEndTime().isAfter(taskSave.getEndTime())) {
-                        return true;
-                    }
-                } else {
-                    sizeTimeNull++;
-                }
-            }
-            return sizeTimeNull == tasks.size();
-        } else {
-            return true;
-        }
-    }
 
     private void checkIntersections() {
         List<Task> tasks = getPrioritizedTasks();
@@ -56,9 +36,9 @@ public class InMemoryTaskManager implements TaskManager {
         for (int i = 1; i < tasks.size(); i++) {
             Task task = tasks.get(i);
 
-            boolean taskHasIntersections = checkTime(task);
+            boolean intersection = task.getStartTime().isBefore(tasks.get(i - 1).getEndTime());
 
-            if (taskHasIntersections) {
+            if (intersection) {
                 throw new ManagerSaveException("Обнаружено пересечение между: " + task.getId() + " и " + tasks.get(i - 1) + ".");
             }
         }
@@ -68,10 +48,6 @@ public class InMemoryTaskManager implements TaskManager {
         return prioritizedTasks.stream().toList();
     }
 
-    @Override
-    public int compare(Task o1, Task o2) {
-        return o1.getStartTime().compareTo(o2.getStartTime());
-    }
 
     // Получение Task / Epic / Subtask
     @Override

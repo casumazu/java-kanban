@@ -28,7 +28,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void returnEmptyHistory() {
-        assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+        assertEquals(Collections.emptyList(), manager.getHistory());
     }
 
     @Test
@@ -48,7 +48,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         List<Epic> epics = manager.getAllEpics();
         assertNotNull(epic.getStatus());
         assertEquals(TaskStatus.NEW, epic.getStatus());
-        assertEquals(Collections.EMPTY_LIST, epic.getSubtasks());
+        assertEquals(Collections.emptyList(), epic.getSubtasks());
         assertEquals(List.of(epic), epics);
     }
 
@@ -116,12 +116,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task = addTask();
         manager.addTask(task);
         manager.removeAllTasks();
-        assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
+        assertEquals(Collections.emptyList(), manager.getAllTask());
 
         Epic epic = addEpic();
         manager.addEpic(epic);
         manager.removeAllEpic();
-        assertEquals(Collections.EMPTY_LIST, manager.getAllEpics());
+        assertEquals(Collections.emptyList(), manager.getAllEpics());
 
         Epic epic1 = addEpic();
         manager.addEpic(epic1);
@@ -136,12 +136,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Task task = addTask();
         manager.addTask(task);
         manager.removeTaskById(task.getId());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllTask());
+        assertEquals(Collections.emptyList(), manager.getAllTask());
 
         Epic epic = addEpic();
         manager.addEpic(epic);
         manager.removeEpicById(epic.getId());
-        assertEquals(Collections.EMPTY_LIST, manager.getAllEpics());
+        assertEquals(Collections.emptyList(), manager.getAllEpics());
 
         Epic epic1 = addEpic();
         manager.addEpic(epic1);
@@ -164,7 +164,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void emptyHistory() {
-        assertEquals(Collections.EMPTY_LIST, manager.getHistory());
+        assertEquals(Collections.emptyList(), manager.getHistory());
     }
 
 
