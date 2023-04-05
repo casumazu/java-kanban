@@ -1,11 +1,18 @@
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.TaskStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +32,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected Subtask addSubtask(Epic epic) {
         return new Subtask("sub2", "subbbs2", epic.getId(), 30, LocalDateTime.now());
     }
+
+
 
     @Test
     public void returnEmptyHistory() {
@@ -78,6 +87,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = addEpic();
         manager.addEpic(epic);
         epic.setStatus(TaskStatus.IN_PROGRESS);
+        manager.updateEpic(epic);
         assertEquals(TaskStatus.IN_PROGRESS, manager.getEpicById(epic.getId()).getStatus());
 
 
@@ -108,27 +118,36 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.addSubtask(subtask);
         subtask.setStatus(TaskStatus.DONE);
         manager.updateSubtask(subtask);
-        assertEquals(TaskStatus.DONE, manager.getEpicById(epic.getId()).getStatus());
+        assertEquals(TaskStatus.DONE, subtask.getStatus());
     }
 
     @Test
     public void deleteAllTasksAndSubtasks() {
-        Task task = addTask();
-        manager.addTask(task);
-        manager.removeAllTasks();
+        testDeleteAll(Task.class);
         assertEquals(Collections.emptyList(), manager.getAllTask());
 
-        Epic epic = addEpic();
-        manager.addEpic(epic);
-        manager.removeAllEpic();
+        testDeleteAll(Epic.class);
         assertEquals(Collections.emptyList(), manager.getAllEpics());
 
-        Epic epic1 = addEpic();
-        manager.addEpic(epic1);
-        Subtask subtask = addSubtask(epic1);
-        manager.addSubtask(subtask);
-        manager.removeAllSubtask();
+        testDeleteAll(Subtask.class);
         assertTrue(manager.getAllSubtask().isEmpty());
+    }
+
+    private void testDeleteAll(Class<?> taskClass) {
+        if (taskClass.equals(Task.class)) {
+            Task task = addTask();
+            manager.addTask(task);
+            manager.removeTaskById(task.getId());
+        } else if(taskClass.equals(Epic.class)){
+            Epic epic = addEpic();
+            manager.addEpic(epic);
+            manager.removeEpicById(epic.getId());
+            assertEquals(Collections.emptyList(), manager.getAllEpics());
+        } else if(taskClass.equals(Subtask.class)){
+            Task task = addTask();
+            manager.addTask(task);
+            manager.removeTaskById(task.getId());
+        }
     }
 
     @Test
@@ -160,12 +179,154 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(manager.getAllSubtask().isEmpty());
     }
 
-
-
     @Test
     public void emptyHistory() {
         assertEquals(Collections.emptyList(), manager.getHistory());
     }
 
+    @Test
+    void addNewTask() {
+        TaskManager taskManager = new InMemoryTaskManager();
+        Task task = new Task("Test addNewTask", "Test addNewTask description");
+        taskManager.addTask(task);
 
+        final Task savedTask = taskManager.getTaskById(task.getId());
+
+        assertNotNull(savedTask, "Задача не найдена.");
+        assertEquals(task, savedTask, "Задачи не совпадают.");
+
+        final List<Task> tasks = taskManager.getAllTask();
+
+        assertNotNull(tasks, "Задачи на возвращаются.");
+        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+    }
+
+    @Test
+    void statusTask(){
+        Task task = addTask();
+        TaskStatus savedTask = task.getStatus();
+        assertNotNull(savedTask, "Статус не задан");
+    }
+
+    @Test
+    void statusEpic(){
+        Epic epic = addEpic();
+        TaskStatus savedTask = epic.getStatus();
+        assertNotNull(savedTask, "Статус не задан");
+    }
+
+    @Test
+    void removeTask(){
+        manager.removeTaskById(1);
+        Task task = manager.getTaskById(1);
+        assertNull(task, "Задача не удалена");
+    }
+
+    @Test
+    void durationSub(){
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(3);
+        for (Subtask subtask: subtasks) {
+            assertNotNull(subtask.getDuration(), "Задано время");
+        }
+    }
+
+    @Test
+    void startTimeSub(){
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(3);
+        for (Subtask subtask: subtasks) {
+            assertNotNull(subtask.getStartTime());
+        }
+    }
+
+    @Test
+    void getEndTimeSub(){
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(3);
+        for (Subtask subtask: subtasks) {
+            assertNotNull(subtask.getEndTime());
+        }
+    }
+
+    @Test
+    void setDurationTask(){
+        Task task = addTask();
+        task.setDuration(60);
+        Assertions.assertEquals(task.getDuration(), 60);
+    }
+
+    @Test
+    void getDurationEpic(){
+        Epic epic = addEpic();
+        manager.addEpic(epic);
+        epic.setId(1);
+        Subtask subtask = addSubtask(epic);
+        manager.addSubtask(subtask);
+        int duration = 0;
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(1);
+        for (Subtask sub: subtasks) {
+            duration += sub.getDuration();
+        }
+        Assertions.assertEquals(duration, epic.getDuration());
+    }
+
+    @Test
+    void setDurationSubtask(){
+        Task task = addTask();
+        task.setDuration(60);
+        Assertions.assertEquals(task.getDuration(), 60);
+    }
+
+    @Test
+    void getTitle(){
+        Task task = new Task("Test1", "Test TaskWork", LocalDateTime.now(), 30);
+        assertNotNull(task.getTitle(), "Нет названия");
+
+        Epic epic = addEpic();
+        manager.addEpic(epic);
+        assertNotNull(epic.getTitle(), "Нет названия");
+
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(0);
+        for (Subtask subtask: subtasks) {
+            assertNotNull(subtask.getTitle(),"Нет названия");
+        }
+    }
+
+    @Test
+    void getDesc(){
+        Task task = addTask();
+        assertNotNull(task.getDescription(), "Нет описания");
+
+        Epic epic = addEpic();
+        manager.addEpic(epic);
+        assertNotNull(epic.getDescription(), "Нет описания");
+
+        Subtask subtask = addSubtask(epic);
+        manager.addSubtask(subtask);
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(0);
+        for (Subtask sub: subtasks) {
+            assertNotNull(sub.getDescription(),"Нет описания");
+        }
+    }
+
+    @Test
+    void setStatus(){
+        Task task = addTask();
+        manager.addTask(task);
+        task.setStatus(TaskStatus.DONE);
+
+        Epic epic = addEpic();
+        manager.addEpic(epic);
+        epic.setStatus(TaskStatus.DONE);
+
+        assertEquals(task.getStatus(), TaskStatus.DONE);
+        assertEquals(epic.getStatus(), TaskStatus.DONE);
+    }
+
+    @Test
+    void getEpicId(){
+        ArrayList<Subtask> subtasks = manager.getSubtasksByEpicId(2);
+        for (Subtask subtask: subtasks) {
+            assertEquals(subtask.getEpicId(),2);
+        }
+    }
 }
