@@ -8,6 +8,7 @@ import java.util.List;
 public interface TaskManager {
 
 
+    List<Task> getPrioritizedTasks();
 
     // Получение ЗАДАЧ / ЕПИКОВ / САБТАСКОВ
     public ArrayList<Task> getAllTask();

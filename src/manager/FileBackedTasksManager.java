@@ -19,6 +19,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private final HashMap<Integer, String> allTask = new HashMap<>();
 
 
+    public FileBackedTasksManager() {
+        file = null;
+    }
 
     public FileBackedTasksManager(File file) {
         this.file = file;

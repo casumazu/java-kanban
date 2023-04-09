@@ -1,9 +1,8 @@
 package tasks;
 
-import manager.*;
+import manager.TaskType;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +10,7 @@ public class Epic extends Task {
 
 
     private final ArrayList<Integer> subtasks;
+    private LocalDateTime endTime;
 
     public List<Subtask> getSubtaskList() {
         return subtaskList;
@@ -54,6 +54,8 @@ public class Epic extends Task {
 //        LocalDateTime dateTime = getStartTime().plusMinutes(totalDurationMinutes);
         return getStartTime().plusMinutes(totalDurationMinutes);
     }
+
+
 
     public int getDuration(){
         int totalDurationMinutes = 0;
