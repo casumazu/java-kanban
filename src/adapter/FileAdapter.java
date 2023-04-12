@@ -1,30 +1,30 @@
 package adapter;
-
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
+import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
-public class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+public class FileAdapter extends TypeAdapter<File> {
+
     @Override
-    public void write(final JsonWriter jsonWriter, final LocalDateTime localDateTime) throws IOException {
-        if (localDateTime == null) {
+    public void write(final JsonWriter jsonWriter, final File file) throws IOException {
+        if (file == null) {
             jsonWriter.nullValue();
         } else {
-            jsonWriter.value(localDateTime.toString());
+            jsonWriter.value(file.getPath());
         }
     }
 
     @Override
-    public LocalDateTime read(final JsonReader jsonReader) throws IOException {
+    public File read(final JsonReader jsonReader) throws IOException {
         if (jsonReader.peek() == JsonToken.NULL) {
             jsonReader.nextNull();
             return null;
         } else {
-            return LocalDateTime.parse(jsonReader.nextString());
+            return new File(jsonReader.nextString());
         }
     }
 }
