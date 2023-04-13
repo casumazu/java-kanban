@@ -7,7 +7,7 @@ import java.util.Collections;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+class InMemoryManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     @BeforeEach
     public void beforeEach() {
         manager = new InMemoryTaskManager();

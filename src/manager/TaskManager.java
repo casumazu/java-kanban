@@ -17,6 +17,8 @@ public interface TaskManager {
 
     public ArrayList<Subtask> getAllSubtask();
 
+    Subtask getSubtaskById(int id);
+
     // ---------------------------------------------------//
     /* TASK */
     public void addTask(Task task);

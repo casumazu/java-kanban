@@ -69,6 +69,11 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(subtasks.values());
     }
 
+    @Override
+    public Subtask getSubtaskById(int id){
+        return subtasks.get(id);
+    }
+
     // ---------------------------------------------------//
     /* TASK */
     @Override
