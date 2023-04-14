@@ -183,7 +183,7 @@ public class HttpTaskServer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "Task задача не найдена.";
+                response = "<Task> задача не найдена.";
             } else {
                 response = GSON.toJson(task);
                 try {
@@ -205,10 +205,11 @@ public class HttpTaskServer {
         if (body.isBlank()) {
             try {
                 h.sendResponseHeaders(404, 0);
+                response = "<Task> задача отсутствует в теле запроса.";
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            response = "<Task> задача отсутствует в теле запроса.";
+
         } else {
             Task task = GSON.fromJson(body, Task.class);
             if (param == null) {
@@ -216,17 +217,19 @@ public class HttpTaskServer {
                 if (task.getId() < 0) {
                     try {
                         h.sendResponseHeaders(400, 0);
+                        response = "Task задача не добавлена.";
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    response = "Task задача не добавлена.";
+
                 } else {
                     try {
                         h.sendResponseHeaders(201, 0);
+                        response = "<Task> задача добавлена.";
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    response = "<Task> задача добавлена.";
+
                 }
             } else {
                 task.setId(id);
@@ -234,17 +237,18 @@ public class HttpTaskServer {
                 if (task.getId() < 0) {
                     try {
                         h.sendResponseHeaders(400, 0);
+                        response = "Не удалось обновить <Task> задачу.";
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    response = "Не удалось обновить <Task> задачу.";
                 } else {
                     try {
                         h.sendResponseHeaders(201, 0);
+                        response = "<Task> задача " + id + " обновлена.";
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    response = "<Task> задача " + id + " обновлена.";
+
                 }
             }
         }
@@ -260,26 +264,28 @@ public class HttpTaskServer {
             manager.removeAllTasks();
             try {
                 h.sendResponseHeaders(200, 0);
+                response = "Все <Task> задачи удалены.";
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            response = "Все <Task> задачи удалены.";
+
         } else {
-            manager.removeTaskById(id);
             if (manager.getTaskById(id) == null) {
                 try {
                     h.sendResponseHeaders(404, 0);
+                    response = "<Task> задача не найдена.";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "<Task> задача не найдена.";
             } else {
                 try {
+                    manager.removeTaskById(id);
                     h.sendResponseHeaders(200, 0);
+                    response = "Задача " + id + " удалена.";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "Задача " + id + " удалена.";
+
             }
         }
         return response;
@@ -305,7 +311,7 @@ public class HttpTaskServer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "Epic задача не найдена.";
+                response = "<Epic> задача не найдена.";
             } else {
                 response = GSON.toJson(epic);
                 try {
@@ -379,29 +385,29 @@ public class HttpTaskServer {
             id = Integer.parseInt(param.split("=")[1]);
         }
         if (param == null) {
-            manager.removeAllEpic();
             try {
+                manager.removeAllEpic();
                 h.sendResponseHeaders(200, 0);
+                response = "Все <Epic> задачи удалены.";
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            response = "Все <Epic> задачи удалены.";
         } else {
-            manager.removeEpicById(id);
             if (manager.getEpicById(id) == null) {
                 try {
                     h.sendResponseHeaders(404, 0);
+                    response = "<Epic> задача не найдена.";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "<Epic> задача не найдена.";
             } else {
                 try {
+                    manager.removeEpicById(id);
                     h.sendResponseHeaders(200, 0);
+                    response = "<Epic> задача " + id + " удалена.";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "<Epic> задача " + id + " удалена.";
             }
         }
         return response;
@@ -517,22 +523,24 @@ public class HttpTaskServer {
             manager.removeAllSubtask();
             try {
                 h.sendResponseHeaders(200, 0);
+                response = "Все <Subtask> задачи удалены.";
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            response = "Все <Subtask> задачи удалены.";
+
         } else {
-            manager.removeSubtaskById(id);
             if (manager.getSubtaskById(id) == null) {
                 subIsNull(h);
                 response = "<Subtask> задача не найдена.";
             } else {
                 try {
+                    manager.removeSubtaskById(id);
                     h.sendResponseHeaders(200, 0);
+                    response = "<Subtask> задача " + id + " удалена.";
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                response = "<Subtask> задача " + id + " удалена.";
+
             }
         }
         return response;
