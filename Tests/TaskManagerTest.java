@@ -21,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 abstract class TaskManagerTest<T extends TaskManager> {
     protected T manager;
 
-
     protected Task addTask() {
         return new Task("Test1", "Test TaskWork", LocalDateTime.now(), 30);
     }
